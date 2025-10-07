@@ -118,7 +118,7 @@ const ListView: React.FC = () => {
 
   useEffect(() => {
     filterAndSortPokemon();
-  }, [pokemonList, searchTerm, sortBy, sortOrder]);
+  }, [filterAndSortPokemon]);
 
   const handlePokemonClick = (pokemon: PokemonListItem) => {
     navigate(`/pokemon/${pokemon.id}`);
