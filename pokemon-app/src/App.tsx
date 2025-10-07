@@ -6,8 +6,12 @@ import DetailView from './components/DetailView';
 import './App.css';
 
 const App: React.FC = () => {
+    // Check if we're on GitHub Pages
+    const isGitHubPages = window.location.hostname === 'yitingw7.github.io';
+    const basename = isGitHubPages ? '/mp2' : '';
+
     return (
-        <Router>
+        <Router basename={basename}>
             <div className="App">
                 <nav className="navbar">
                     <div className="nav-container">
