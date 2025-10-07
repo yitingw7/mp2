@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import ListView from './components/ListView';
 import GalleryView from './components/GalleryView';
 import DetailView from './components/DetailView';
@@ -26,6 +26,7 @@ const App: React.FC = () => {
                         <Route path="/" element={<ListView />} />
                         <Route path="/gallery" element={<GalleryView />} />
                         <Route path="/pokemon/:id" element={<DetailView />} />
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </main>
             </div>

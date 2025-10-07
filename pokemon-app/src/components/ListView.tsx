@@ -4,30 +4,32 @@ import { getAllPokemon, getPokemonDetails } from '../services/pokemonApi';
 import './ListView.css';
 
 interface PokemonListItem {
-    id: number;
-    name: string;
-    image: string | null;
-    types: string[];
-    height: number;
-    weight: number;
-    base_experience: number;
+  id: number;
+  name: string;
+  image: string | null;
+  types: string[];
+  height: number;
+  weight: number;
+  base_experience: number;
 }
 
 const ListView: React.FC = () => {
-    const [pokemonList, setPokemonList] = useState<PokemonListItem[]>([]);
-    const [filteredPokemon, setFilteredPokemon] = useState<PokemonListItem[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [searchTerm, setSearchTerm] = useState<string>('');
-    const [sortBy, setSortBy] = useState<string>('name');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-    const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
+  const [pokemonList, setPokemonList] = useState<PokemonListItem[]>([]);
+  const [filteredPokemon, setFilteredPokemon] = useState<PokemonListItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const fetchPokemonData = async () => {
     try {
       setLoading(true);
+      console.log('开始获取Pokemon数据...');
       const response = await getAllPokemon(151, 0);
-      
+      console.log('获取到Pokemon列表:', response);
+
       const pokemonWithDetails = await Promise.all(
         response.results.map(async (pokemon, index) => {
           try {
@@ -55,7 +57,8 @@ const ListView: React.FC = () => {
           }
         })
       );
-      
+
+      console.log('设置Pokemon列表:', pokemonWithDetails);
       setPokemonList(pokemonWithDetails);
     } catch (error) {
       console.error('Failed to fetch Pokemon data:', error);
@@ -72,7 +75,7 @@ const ListView: React.FC = () => {
 
     filtered.sort((a, b) => {
       let aValue: any, bValue: any;
-      
+
       switch (sortBy) {
         case 'name':
           aValue = a.name;
@@ -117,98 +120,98 @@ const ListView: React.FC = () => {
     filterAndSortPokemon();
   }, [filterAndSortPokemon]);
 
-    const handlePokemonClick = (pokemon: PokemonListItem) => {
-        navigate(`/pokemon/${pokemon.id}`);
-    };
+  const handlePokemonClick = (pokemon: PokemonListItem) => {
+    navigate(`/pokemon/${pokemon.id}`);
+  };
 
-    if (loading) {
-        return (
-            <div className="loading-container">
-                <div className="loading-spinner"></div>
-                <p>Loading Pokemon data...</p>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="error-container">
-                <h2>Error</h2>
-                <p>{error}</p>
-                <button onClick={fetchPokemonData} className="retry-button">
-                    Try Again
-                </button>
-            </div>
-        );
-    }
-
+  if (loading) {
     return (
-        <div className="list-view">
-            <div className="search-and-sort">
-                <div className="search-container">
-                    <input
-                        type="text"
-                        placeholder="Search Pokemon..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
-                </div>
-
-                <div className="sort-container">
-                    <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="sort-select"
-                    >
-                        <option value="name">Sort by Name</option>
-                        <option value="id">Sort by ID</option>
-                        <option value="height">Sort by Height</option>
-                        <option value="weight">Sort by Weight</option>
-                        <option value="base_experience">Sort by Base Experience</option>
-                    </select>
-
-                    <select
-                        value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
-                        className="sort-select"
-                    >
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
-                    </select>
-                </div>
-            </div>
-
-            <div className="pokemon-grid">
-                {filteredPokemon.map((pokemon) => (
-                    <div
-                        key={pokemon.id}
-                        className="pokemon-card"
-                        onClick={() => handlePokemonClick(pokemon)}
-                    >
-                        <div className="pokemon-image">
-                            {pokemon.image ? (
-                                <img src={pokemon.image} alt={pokemon.name} />
-                            ) : (
-                                <div className="no-image">No Image</div>
-                            )}
-                        </div>
-                        <div className="pokemon-info">
-                            <h3>{pokemon.name}</h3>
-                            <p>ID: {pokemon.id}</p>
-                            <div className="pokemon-types">
-                                {pokemon.types.map((type, index) => (
-                                    <span key={index} className={`type-badge type-${type}`}>
-                                        {type}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading Pokemon data...</p>
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Error</h2>
+        <p>{error}</p>
+        <button onClick={fetchPokemonData} className="retry-button">
+          Try Again
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="list-view">
+      <div className="search-and-sort">
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search Pokemon..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+
+        <div className="sort-container">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="sort-select"
+          >
+            <option value="name">Sort by Name</option>
+            <option value="id">Sort by ID</option>
+            <option value="height">Sort by Height</option>
+            <option value="weight">Sort by Weight</option>
+            <option value="base_experience">Sort by Base Experience</option>
+          </select>
+
+          <select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+            className="sort-select"
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="pokemon-grid">
+        {filteredPokemon.map((pokemon) => (
+          <div
+            key={pokemon.id}
+            className="pokemon-card"
+            onClick={() => handlePokemonClick(pokemon)}
+          >
+            <div className="pokemon-image">
+              {pokemon.image ? (
+                <img src={pokemon.image} alt={pokemon.name} />
+              ) : (
+                <div className="no-image">No Image</div>
+              )}
+            </div>
+            <div className="pokemon-info">
+              <h3>{pokemon.name}</h3>
+              <p>ID: {pokemon.id}</p>
+              <div className="pokemon-types">
+                {pokemon.types.map((type, index) => (
+                  <span key={index} className={`type-badge type-${type}`}>
+                    {type}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default ListView;
